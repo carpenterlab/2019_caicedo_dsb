@@ -52,8 +52,11 @@ def measures_at(threshold, IOU):
     
     f1 = 2*TP / (2*TP + FP + FN + 1e-9)
     official_score = TP / (TP + FP + FN + 1e-9)
+
+    precision = TP / (TP + FP + 1e-9)
+    recall = TP / (TP + FN + 1e-9)
     
-    return f1, TP, FP, FN, official_score
+    return f1, TP, FP, FN, official_score, precision, recall
 
 # Compute Average Precision for all IoU thresholds
 
@@ -68,9 +71,9 @@ def compute_af1_results(ground_truth, prediction, results, image_name):
     
     # Calculate F1 score at all thresholds
     for t in np.arange(0.5, 1.0, 0.05):
-        f1, tp, fp, fn, os = measures_at(t, IOU)
+        f1, tp, fp, fn, os, prec, rec = measures_at(t, IOU)
         res = {"Image": image_name, "Threshold": t, "F1": f1, "Jaccard": jaccard, 
-               "TP": tp, "FP": fp, "FN": fn, "Official_Score": os}
+               "TP": tp, "FP": fp, "FN": fn, "Official_Score": os, "Precision": prec, "Recall": rec}
         row = len(results)
         results.loc[row] = res
         
